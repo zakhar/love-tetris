@@ -4,15 +4,15 @@ local shapes = require("shapes")
 
 math.randomseed(os.time())
 
-FloatYPositionSpeed = 0.5
+FloatYPositionSpeed = 1
 GridSize = 16
 
 local Figure = {
     text = "xx",
     shape = utils.stringToTable(shapes[math.random(#shapes)]),
-    floatYPosition = 0,
-    x = 10,
-    y = 10,
+    floatYPosition = 1,
+    x = 1,
+    y = 1,
 }
 
 function Figure:draw()
@@ -24,32 +24,68 @@ function Figure:draw()
 end
 
 function Figure:rotateRight()
-    local h = #self.shape
-    local new = {}
-    for r, row in ipairs(self.shape) do
-        for c, val in ipairs(row) do
-            if not new[c] then
-                new[c] = {}
-            end
-            new[c][h - r + 1] = val
+    self.shape = utils.tableRotateRight(self.shape)
+end
+
+
+local Cup = {
+    x = 1,
+    y = 1,
+    w = 20,
+    h = 35,
+    field = nil
+}
+
+function Cup:init()
+    self.field = utils.createMat(self.h, self.w, ".")
+end
+
+function Cup:draw()
+    for c = 1, self.w + 1 do
+        drawBlock("x", self.x + c - 1, self.h)
+    end
+    for r = 1, self.h - 1 do
+        drawBlock("x", 1, self.y + r - 1)
+        drawBlock("x", self.w + 1, self.y + r - 1)
+    end
+    for rowIdx, row in ipairs(self.field) do
+        for colIdx, char in ipairs(row) do
+            drawBlock(char, self.x + colIdx - 1, self.y + rowIdx - 1)
         end
     end
-    self.shape = new
+
+end
+
+function Cup:collision(figure)
+    for r = 1, #figure.shape do
+        for c = 1, #figure.shape[0] do
+            local fig = figure.shape[r][c]
+            local cup = self.field[1]
+        end
+    end
 end
 
 function drawBlock(type, x, y)
+    local color
     if type == "*" then
-        love.graphics.setColor(128, 33, 33)
-        love.graphics.rectangle(
-            "fill", GridSize * x, GridSize * y, GridSize, GridSize)
-        love.graphics.setColor(208, 33, 33)
-        love.graphics.rectangle(
-            "line", GridSize * x, GridSize * y, GridSize, GridSize)
+        color = {120, 30, 30}
+    elseif type == "x" then
+        color = {30, 120, 30}
+    else
+        return
     end
+
+    love.graphics.setColor(unpack(color))
+    love.graphics.rectangle(
+        "fill", GridSize * x, GridSize * y, GridSize, GridSize)
+    love.graphics.setColor(unpack(utils.arrMul(color, 0.85)))
+    love.graphics.rectangle(
+        "line", GridSize * x, GridSize * y, GridSize, GridSize)
 end
 
 function love.load()
     love.keyboard.setKeyRepeat(false)
+    Cup:init()
 end
 
 function love.keypressed(key)
@@ -72,5 +108,6 @@ end
 
 
 function love.draw()
+    Cup:draw()
     Figure:draw()
 end

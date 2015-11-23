@@ -20,4 +20,38 @@ function utils.stringToTable(str)
     return resTable
 end
 
+function utils.tableRotateRight(tbl)
+    local h = #tbl
+    local new = {}
+    for r, row in ipairs(tbl) do
+        for c, val in ipairs(row) do
+            if not new[c] then
+                new[c] = {}
+            end
+            new[c][h - r + 1] = val
+        end
+    end
+    return new
+end
+
+function utils.arrMul(arr, coef)
+    local new = {}
+    for i, val in ipairs(arr) do
+        new[i] = val * coef
+    end
+    return new
+end
+
+
+function utils.createMat(rows, cols, val)
+    local t = {}
+    for i = 1, rows do
+        t[i] = {}
+        for j = 1, cols do
+            t[i][j] = val
+        end
+    end
+    return t
+end
+
 return utils
