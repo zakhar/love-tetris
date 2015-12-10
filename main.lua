@@ -11,7 +11,7 @@ local Figure = {
     text = "xx",
     shape = utils.stringToTable(shapes[math.random(#shapes)]),
     floatYPosition = 1,
-    x = 1,
+    x = 10,
     y = 1,
 }
 
@@ -25,6 +25,16 @@ end
 
 function Figure:rotateRight()
     self.shape = utils.tableRotateRight(self.shape)
+end
+
+
+function Figure:moveRight()
+    self.x = self.x + 1
+end
+
+
+function Figure:moveLeft()
+    self.x = self.x - 1
 end
 
 
@@ -92,9 +102,9 @@ function love.keypressed(key)
     if key == "escape" then
         love.event.quit()
     elseif key == "left" then
-        Figure.x = Figure.x - 1
+        Figure:moveLeft()
     elseif key == "right" then
-        Figure.x = Figure.x + 1
+        Figure:moveRight()
     elseif key == "up" then
         Figure:rotateRight()
     end
