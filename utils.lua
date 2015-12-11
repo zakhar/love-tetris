@@ -54,4 +54,25 @@ function utils.createMat(rows, cols, val)
     return t
 end
 
+
+-- https://gist.github.com/tylerneylon/81333721109155b2d244
+function utils.copy_table(obj, seen)
+    -- Handle non-tables and previously-seen tables.
+    if type(obj) ~= 'table' then
+        return obj
+    end
+    if seen and seen[obj] then
+        return seen[obj]
+    end
+
+    -- New table; mark it as seen an copy recursively.
+    local s = seen or {}
+    local res = setmetatable({}, getmetatable(obj))
+    s[obj] = res
+    for k, v in pairs(obj) do
+        res[utils.copy_table(k, s)] = utils.copy_table(v, s)
+    end
+    return res
+end
+
 return utils
