@@ -12,8 +12,8 @@ Figure = {}
 function Figure:new(num, x, y)
     local obj = {
         shape = nil,
-        x = nil,
-        y = nil,
+        x = 0,
+        y = 0,
     }
     if num then
         obj.shape = utils.stringToTable(shapes[num])
@@ -69,22 +69,21 @@ function Figure:rotateRight()
 end
 
 
-function Figure:draw()
+function Figure:draw(x, y)
+    x = x or 0
+    y = y or 0
     for rowIdx, row in ipairs(self.shape) do
         for colIdx, char in ipairs(row) do
-            drawBlock(
-                char,
-                SCENE_CUP_X + self.x - 2 + colIdx,
-                SCENE_CUP_Y + self.y - 2 + rowIdx
-            )
+            drawBlock(char, x + self.x - 2 + colIdx, y + self.y - 2 + rowIdx)
         end
     end
 end
 
-
-SCENE_CUP_WIDTH = 10
-SCENE_CUP_HEIGHT = 20
-SCENE_CUP_X = 10
+WINDOW_WIDTH = 400
+WINDOW_HEIGHT = 500
+SCENE_CUP_WIDTH = 15
+SCENE_CUP_HEIGHT = 25
+SCENE_CUP_X = 3
 SCENE_CUP_Y = 3
 
 SCENE_FIGURE_X = 1
@@ -237,7 +236,10 @@ function Scene:draw()
 
     -- draw figure
     if self.currentFigure then
-        self.currentFigure:draw()
+        self.currentFigure:draw(SCENE_CUP_X, SCENE_CUP_Y)
+    end
+    if self.nextFigure then
+        self.nextFigure:draw(SCENE_CUP_X + SCENE_CUP_WIDTH + 3, SCENE_CUP_Y + 1)
     end
 end
 
@@ -265,8 +267,10 @@ function love.load()
     love.keyboard.setKeyRepeat(true)
     scene = Scene:new()
     time = 0
+    love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT,
+                        {resizable=false, vsync=true})
+    love.window.setTitle("Tetris")
 end
-
 
 function love.keypressed(key)
     if key == "escape" then
