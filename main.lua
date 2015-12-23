@@ -244,13 +244,26 @@ function Scene:draw()
 end
 
 
+COLORS = {
+    ["x"] = {30, 100, 30},
+    ["="] = {250, 255, 0},
+    ["1"] = {0, 228, 255},
+    ["@"] = {246, 0, 0},
+    ["o"] = {105, 182, 37},
+    ["n"] = {255, 141, 0},
+    ["#"] = {255, 81, 188},
+    ["*"] = {255, 81, 188},
+}
+
+
+function getColor(type)
+    return COLORS[type]
+end
+
+
 function drawBlock(type, x, y)
-    local color
-    if type == "*" then
-        color = {120, 30, 30}
-    elseif type == "x" then
-        color = {30, 120, 30}
-    else
+    local color = getColor(type)
+    if not color then
         return
     end
 
