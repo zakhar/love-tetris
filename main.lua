@@ -96,6 +96,7 @@ function Scene:new()
         currentFigure = Figure:new_random(),
         nextFigure = Figure:new_random(),
         cup = utils.createMat(SCENE_CUP_HEIGHT, SCENE_CUP_WIDTH, "."),
+        score = 0,
     }
 
     setmetatable(o, self)
@@ -168,6 +169,7 @@ function Scene:moveFigureDown()
     futureFigure:moveDown()
     if self:isCollision(futureFigure) then
         self:unite(self.currentFigure)
+        self.score =  self.score + 1
         self:checkFilled()
         self:generateNextFigure()
     else
@@ -200,6 +202,7 @@ function Scene:checkFilled()
         end
         if filled then
             self:removeLine(r)
+            self.score = self.score + 10
         end
     end
 end
@@ -241,6 +244,9 @@ function Scene:draw()
     if self.nextFigure then
         self.nextFigure:draw(SCENE_CUP_X + SCENE_CUP_WIDTH + 3, SCENE_CUP_Y + 1)
     end
+
+    love.graphics.setColor(0, 255, 0, 255)
+    love.graphics.print(self.score, 320, 25)
 end
 
 
