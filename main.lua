@@ -97,6 +97,8 @@ function Scene:new()
         nextFigure = Figure:new_random(),
         cup = utils.createMat(SCENE_CUP_HEIGHT, SCENE_CUP_WIDTH, "."),
         score = 0,
+        time = 0,
+        move_down_duration = 1,
     }
 
     setmetatable(o, self)
@@ -203,6 +205,7 @@ function Scene:checkFilled()
         if filled then
             self:removeLine(r)
             self.score = self.score + 10
+            self.move_down_duration = self.move_down_duration * 0.99
         end
     end
 end
@@ -221,6 +224,16 @@ function Scene:removeLine(row)
         self.cup[1][c] = "."
     end
 end
+
+
+function Scene:update(dt)
+    self.time = self.time + dt
+    if self.time > self.move_down_duration then
+        self.time = self.time - self.move_down_duration
+        scene:moveFigureDown()
+    end
+end
+
 
 function Scene:draw()
     -- draw cup
@@ -285,11 +298,11 @@ end
 function love.load()
     love.keyboard.setKeyRepeat(true)
     scene = Scene:new()
-    time = 0
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT,
                         {resizable=false, vsync=true})
     love.window.setTitle("Tetris")
 end
+
 
 function love.keypressed(key)
     if key == "escape" then
@@ -305,13 +318,9 @@ function love.keypressed(key)
     end
 end
 
-MOVE_DOWN_DURATION = 1
+
 function love.update(dt)
-    time = time + dt
-    if time > MOVE_DOWN_DURATION then
-        time = time - MOVE_DOWN_DURATION
-        scene:moveFigureDown()
-    end
+    scene:update(dt)
 end
 
 
